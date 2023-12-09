@@ -1,22 +1,17 @@
 <?php
 
 require_once __DIR__ .'/controller.php';
-if (sizeof($_COOKIE)){
-    $controller = new Controller();
-    $controller->run($_COOKIE['password']??null);
-}
-
-else{
-    $url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-    header("Location: ".$url."/formData.php?auth=1");
-    die();
-}
+$str = "asd,";
+$controller = new Controller();
+$url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+$controller->run($_COOKIE['password']??null, $url);
 ?>
 <html>
 <head>
     <title>Главная страница</title>
 </head>
 <body>
+<a href="<?= $url."/edit.php"?>">Редактировать профиль</a>
 <table>
     <tr>
         <th>Имя</th>
@@ -26,6 +21,7 @@ else{
         <th>Баллы</th>
     </tr>
     <?php echo $controller->render() ?>
+
 </table>
 </body>
 </html>

@@ -20,20 +20,27 @@ class Viewer{
     </tr>
     HTML;
     protected $replacements;
-    public function __construct(object $record){
-        $this->replacements=[
-            "{{{first_name}}}"=>$record->get_first_name(),
-            "{{{surname}}}"=>$record->get_surname(),
-            "{{{place}}}"=>$record->get_place(),
-            "{{{group}}}"=>$record->get_group(),
-            "{{{mark}}}"=>$record->get_mark(),
-            
-        ];
+    public function __construct(){
     }
-    public function render(){
-        return str_replace(
-            array_keys($this->replacements),
-            array_values($this->replacements),
-            self::LAYOUT);
+    public function render(array $students): string{
+        $str = "";
+        foreach($students as $key){
+            $this->replacements=[
+                "{{{first_name}}}"=>$key->get_first_name(),
+                "{{{surname}}}"=>$key->get_surname(),
+                "{{{place}}}"=>$key->get_place(),
+                "{{{group}}}"=>$key->get_group_id(),
+                "{{{mark}}}"=>$key->get_mark(),
+                
+            ];
+            $str .= str_replace(
+                array_keys($this->replacements),
+                array_values($this->replacements),
+                self::LAYOUT
+            );
+
+        }
+
+        return $str;
     }
 }

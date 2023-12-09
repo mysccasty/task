@@ -39,15 +39,30 @@ class Model{
         return $query->execute();
         
     }
-    public function auth(string $password){
-        $query = $this->pdo->prepare('SELECT * FROM students WHERE password=:password');
-        $query->bindValue(':password',$password);
-        return $query->fetchAll(PDO::FETCH_CLASS,'Student');
-        
+    public function search(string $field, string $value){
+        if ($field=="password"){
+            $query = $this->pdo->prepare('SELECT * FROM students WHERE password=:value');
+        }
+        $query->bindValue(":value",$value);
+        if($query->execute()){
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        }    
     }
     public function allStudents(){
-        $query = $this->pdo->prepare("SELECT first_name, surname, place, group_id, mark from students");
-        return $query->fetchAll(PDO::FETCH_CLASS,"Student");
+        $query = $this->pdo->prepare("SELECT first_name, surname, place, group_id, mark FROM students");
+        if($query->execute()){
+            return $query->fetchAll(PDO::FETCH_CLASS,"Student");
+        }
+        
+    }
+    public function editStudent(Array $student, String $password){
+        foreach($student as $key =>$value){
+            $queryStr = "UPDATE students SET ".$key." = :value WHERE password=:password";
+            $query = $this->pdo->prepare($queryStr);
+            $query->bindValue(":value", $value);
+            $query->bindValue(":password", $password);
+            $query->execute();
+        }
     }
 
 }
