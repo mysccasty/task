@@ -1,7 +1,7 @@
 <?php
 class Viewer{
     const LAYOUT = <<<HTML
-    <tr>
+    <tr {{{marked}}}>
         <td>
             {{{first_name}}}
         </td>
@@ -22,10 +22,12 @@ class Viewer{
     protected $replacements;
     public function __construct(){
     }
-    public function render(array $students): string{
+    public function render(array $students, array $marked=[]): string{
         $str = "";
         foreach($students as $key){
-            $this->replacements=[
+            $markOpen = "";
+            $markClose = "";
+            $this->replacements=["{{{marked}}}"=>"",
                 "{{{first_name}}}"=>$key->get_first_name(),
                 "{{{surname}}}"=>$key->get_surname(),
                 "{{{place}}}"=>$key->get_place(),
@@ -33,11 +35,15 @@ class Viewer{
                 "{{{mark}}}"=>$key->get_mark(),
                 
             ];
+            if (in_array($key->get_student_id(), $marked)){
+                $this->replacements["{{{marked}}}"] = 'class="marked"';
+            }
             $str .= str_replace(
                 array_keys($this->replacements),
                 array_values($this->replacements),
                 self::LAYOUT
             );
+            #echo in_array($key->get_student_id(), $marked);
 
         }
 

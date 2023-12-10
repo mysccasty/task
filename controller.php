@@ -13,30 +13,35 @@ class Controller{
         "password"=> ""
     ];
     private $url;
+    private $view;
     public function __construct(){
         $this->db = new Model($this->dbinfo);
+        $this->view = new Viewer();
         $this->url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
     }
-    public function render():string{
+    public function getUrl(){
+        return $this->url;
+    }
+    public function render(Array $marked):string{
         
         $records = $this->db->allStudents();
-        $view = new Viewer();
-            return $view->render($records);
+        
+            return $this->view->render($records, $marked);
 
     }
     public function run(?string $password){
         if (!$password){
             $this->redirect("/auth.php");
         }
-        $data = $this->search("password", $password);
+        $data = $this->find("password", $password);
         if(sizeof($data)){
-            return;
+            return 1;
 
         }
         $this->redirect("/auth.php");
     }
-    public function search(string $field, string $value){
-        return $this->db->search($field, $value);
+    public function find(string $field, string $value){
+        return $this->db->find($field, $value);
     }
     public function redirect(string $script){
         header("Location: ".$this->url.$script);
@@ -51,5 +56,21 @@ class Controller{
         $this->db->editStudent($data, $password);
         
         $this->redirect("/index.php");
+    }
+    public function search(?array $request){
+        $queryList = explode(" ", $request['search']);
+        $renderedString = "";
+        $forRender = [];
+        foreach($queryList as $key){
+            $result = $this->db->search("%".trim($key, "\n\r\t,.")."%");
+            $forRender = array_merge($forRender, $result);
+        }
+        $forRender = array_unique($forRender);
+        foreach($forRender as $key){
+            $renderedString.=$this->view->render($this->db->findWithId($key));
+        }
+        echo $renderedString;
+        return $forRender;
+
     }
 }

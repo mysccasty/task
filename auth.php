@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ .'/controller.php';
 require_once __DIR__.'/formData.php';
+$controller = new Controller();
+if ($controller->run($_COOKIE['password'])){
+    $controller->redirect("/index.php");
+}
 const gender = <<<HTML
         <p>Пол</p>
             <input type="radio" id="male" name="gender" value="муж" checked/>
@@ -17,7 +21,6 @@ if(sizeof($_POST)){
     $record['timestamp'] = $timestamp;
     $expires = strtotime("+10 years", $timestamp);
     $record['password'] = $password;
-    $controller = new Controller();
     $url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 
     if ($controller->setNewUser($record)){

@@ -39,7 +39,7 @@ class Model{
         return $query->execute();
         
     }
-    public function search(string $field, string $value){
+    public function find(string $field, string $value){
         if ($field=="password"){
             $query = $this->pdo->prepare('SELECT * FROM students WHERE password=:value');
         }
@@ -48,8 +48,15 @@ class Model{
             return $query->fetchAll(PDO::FETCH_ASSOC);
         }    
     }
+    public function findWithId(string $value){
+        $query = $this->pdo->prepare('SELECT * FROM students WHERE student_id=:value');
+        $query->bindValue(":value",$value);
+        if($query->execute()){
+            return $query->fetchAll(PDO::FETCH_CLASS, "Student");
+        }    
+    }
     public function allStudents(){
-        $query = $this->pdo->prepare("SELECT first_name, surname, place, group_id, mark FROM students");
+        $query = $this->pdo->prepare("SELECT first_name, surname, place, group_id, mark, student_id FROM students");
         if($query->execute()){
             return $query->fetchAll(PDO::FETCH_CLASS,"Student");
         }
@@ -63,6 +70,20 @@ class Model{
             $query->bindValue(":password", $password);
             $query->execute();
         }
+    }
+    public function search(String $searchQuery){
+        $param = ["first_name", "surname", "place", "group_id", "mark"];
+        $response = [];
+        foreach($param as $key){
+            $queryStr = "SELECT student_id FROM students WHERE "
+            .$key." LIKE :searchQuery";
+            $query = $this->pdo->prepare($queryStr);
+            $query->bindValue(":searchQuery", $searchQuery);
+            $query->execute();
+            $result = $query->fetchAll(PDO::FETCH_COLUMN);
+            $response = array_merge($response, $result);
+        }
+        return $response;
     }
 
 }
