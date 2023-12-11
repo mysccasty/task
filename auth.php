@@ -7,7 +7,6 @@ $password = $_COOKIE['password'] ?? null;
 if ($controller->run($password)){
     $controller->redirect("/index.php");
 }
-echo "PONOS_NEGRA";
 const gender = <<<HTML
         <p>Пол</p>
             <input type="radio" id="male" name="gender" value="муж" checked/>
