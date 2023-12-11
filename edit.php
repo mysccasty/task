@@ -10,6 +10,9 @@ if(sizeof($_POST)){
             unset($input[$key]);
         }
     }
+    foreach($input as &$value){
+        $value = htmlspecialchars($value);
+    }
     if($controller->editUser($input, $_COOKIE["password"]));
 }
 $replacements = [

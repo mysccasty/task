@@ -3,9 +3,15 @@
 require_once __DIR__ .'/controller.php';
 $controller = new Controller();
 $url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-$controller->run($_COOKIE['password']??null);
+if(!$controller->run($_COOKIE['password']??null)){
+    $controller->redirect("/auth.php");
+}
 $marked = [];
-echo $url.$_SERVER["QUERY_STRING"];
+$getValidate = [];
+foreach($_GET as $key=>$value){
+    $getValidate[$key] = htmlspecialchars($value);
+
+}
 ?>
 <html>
 <head>
@@ -35,31 +41,31 @@ echo $url.$_SERVER["QUERY_STRING"];
     <button type="submit">Найти</button>
 </form>
 <?php
-if (isset($_GET["last"])){
-    $controller->setlastId($_GET["last"]);
+if (isset($getValidate["last"])){
+    $controller->setlastId($getValidate["last"]);
 }
-if (isset($_GET["search"])){
+if (isset($getValidate["search"])){
     $hide = "style='display: none;'";
     $message = "Показать таблицу";
-    if(isset($_GET["sortedBy"]) || isset($_GET["page"])){
+    if(isset($getValidate["sortedBy"]) || isset($getValidate["page"])){
         $hide = "";
         $message = "Скрыть таблицу";
     }
-    echo "<h4>Результаты поиска по запросу: ".$_GET["search"]."</h4>
+    echo "<h4>Результаты поиска по запросу: ".$getValidate["search"]."</h4>
     <table>";
-    $marked = $controller->search($_GET);
+    $marked = $controller->search($getValidate);
     echo "</table>";
     echo "<input type='button' id='hide' onclick='showtable()' value='{$message}'/>";
 }
-if (isset($_GET["sortedBy"])){
-    if (isset($_GET["order"])){
+if (isset($getValidate["sortedBy"])){
+    if (isset($getValidate["order"])){
         
-        $controller->setOrder($_GET["order"]);
+        $controller->setOrder($getValidate["order"]);
     }
-    $controller->setSort($_GET["sortedBy"]);
+    $controller->setSort($getValidate["sortedBy"]);
 }
-if (isset($_GET["page"])){
-    $controller->setPage($_GET["page"]);
+if (isset($getValidate["page"])){
+    $controller->setPage($getValidate["page"]);
 }
 
 
@@ -67,11 +73,11 @@ if (isset($_GET["page"])){
 <div id="hidetable" <?php echo $hide ?? "" ?>>
 <table>
     <tr>
-        <th onclick="sortRequest('<?= http_build_query(array_merge($_GET, ['sortedBy'=>'first_name']))?>')">Имя</th>
-        <th onclick="sortRequest('<?= http_build_query(array_merge($_GET, ['sortedBy'=>'surname']))?>')">Фамилия</th>
-        <th onclick="sortRequest('<?= http_build_query(array_merge($_GET, ['sortedBy'=>'place']))?>')">Вуз</th>
-        <th onclick="sortRequest('<?= http_build_query(array_merge($_GET, ['sortedBy'=>'group_id']))?>')">Группа</th>
-        <th onclick="sortRequest('<?= http_build_query(array_merge($_GET, ['sortedBy'=>'mark']))?>')">Баллы</th>
+        <th onclick="sortRequest('<?= http_build_query(array_merge($getValidate, ['sortedBy'=>'first_name']))?>')">Имя</th>
+        <th onclick="sortRequest('<?= http_build_query(array_merge($getValidate, ['sortedBy'=>'surname']))?>')">Фамилия</th>
+        <th onclick="sortRequest('<?= http_build_query(array_merge($getValidate, ['sortedBy'=>'place']))?>')">Вуз</th>
+        <th onclick="sortRequest('<?= http_build_query(array_merge($getValidate, ['sortedBy'=>'group_id']))?>')">Группа</th>
+        <th onclick="sortRequest('<?= http_build_query(array_merge($getValidate, ['sortedBy'=>'mark']))?>')">Баллы</th>
     </tr>
     <?php echo $controller->render($marked) ?>
 
@@ -83,9 +89,10 @@ if (isset($_GET["page"])){
 </body>
 <script>
     function sortRequest(url){
-        let paramsString = document.location.search;
-        let searchParams = new URLSearchParams(paramsString);
-        let urlParams = new URLSearchParams(url);
+        const paramsString = document.location.search;
+        const searchParams = new URLSearchParams(paramsString);
+        const urlParams = new URLSearchParams(url);
+
         if (urlParams.get("sortedBy") === searchParams.get("sortedBy") && searchParams.get("order") !== "1"){
             urlParams.set('order','1');
         }
@@ -93,22 +100,22 @@ if (isset($_GET["page"])){
             urlParams.delete('page');
             urlParams.delete('order');
         }
-        window.location.href = "?"+urlParams;
+        window.location.search = urlParams;
     }
     function pagination(page, mode){
-        let url = document.location.search;
-        let urlParams = new URLSearchParams(url);
+        const url = document.location.search;
+        const urlParams = new URLSearchParams(url);
         if (mode==="next"){
             urlParams.set('page', Number(page)+1);
         }
         else {
             urlParams.set('page', Number(page)-1);
         }
-        window.location.href = "?" + urlParams;
+        window.location.search = urlParams;
     }
     function showtable() {
-        let table = document.getElementById("hidetable");
-        let showButton = document.getElementById("hide");
+        const table = document.getElementById("hidetable");
+        const showButton = document.getElementById("hide");
         if (table.style.display === "none") {
             table.style.display = "";
             showButton.value = "Скрыть таблицу";

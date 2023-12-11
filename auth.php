@@ -1,10 +1,13 @@
 <?php
+//protectedRoute, gitmerge, gitcherry, gitrebase
 require_once __DIR__ .'/controller.php';
 require_once __DIR__.'/formData.php';
 $controller = new Controller();
-if ($controller->run($_COOKIE['password'])){
+$password = $_COOKIE['password'] ?? null;
+if ($controller->run($password)){
     $controller->redirect("/index.php");
 }
+echo "PONOS_NEGRA";
 const gender = <<<HTML
         <p>Пол</p>
             <input type="radio" id="male" name="gender" value="муж" checked/>
@@ -17,7 +20,10 @@ if(sizeof($_POST)){
     $timestamp = time();
     $password = hash('sha256', uniqid(mt_rand(), true));
 
-    $record = $_POST;
+    
+    foreach($_POST as $key=>$value){
+        $record[$key] = htmlspecialchars($value);
+    }
     $record['timestamp'] = $timestamp;
     $expires = strtotime("+10 years", $timestamp);
     $record['password'] = $password;

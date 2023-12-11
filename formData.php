@@ -11,18 +11,18 @@ const form = <<<HTML
     <form action="{{{method}}}" method="post">
         <h1>{{{head}}}</h1>
         <p>Почта</p>
-            <input type="email" id="email" name="email" value="{{{email}}}" required>
+            <input type="email" id="email" name="email" value="{{{email}}}">
         <p>Имя</p>
-            <input type="text" id="first_name" name="first_name" value="{{{first_name}}}" required>
+            <input type="text" id="first_name" name="first_name" value="{{{first_name}}}" >
         <p>Фамилия</p>
-            <input type="text" id="surname" name="surname" value="{{{surname}}}" required>
+            <input type="text" id="surname" name="surname" value="{{{surname}}}" >
             {{{gender}}}
         <p>ВУЗ</p>
             <input type="text" id="place" name="place" value="{{{place}}}">
         <p>Группа</p>
             <input type="text" id="group_id" name="group_id" value="{{{group_id}}}">
         <p>Баллы</p>
-            <input type="number" id="mark" name="mark" value="{{{mark}}}" required>
+            <input type="number" id="mark" name="mark" value="{{{mark}}}" >
         <br>
         <br>    
         <button type="submit">{{{button}}}</button>

@@ -16,7 +16,7 @@ class Controller{
     private $view;
     private $sort;
     private $order;
-    private $offset = 2;
+    private $offset = 5;
     private $page = 0;
     private $count;
     public function __construct(){
@@ -62,15 +62,15 @@ class Controller{
 
     }
     public function run(?string $password){
-        if (!$password){
-            $this->redirect("/auth.php");
+        if ($password){
+            $data = $this->find("password", $password);
+            if(sizeof($data)){
+                return 1;
+    
+            }
         }
-        $data = $this->find("password", $password);
-        if(sizeof($data)){
-            return 1;
 
-        }
-        $this->redirect("/auth.php");
+        return 0;
     }
     public function find(string $field, string $value){
         return $this->db->find($field, $value);
