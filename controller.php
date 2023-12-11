@@ -16,6 +16,9 @@ class Controller{
     private $view;
     private $sort;
     private $order;
+    private $offset = 2;
+    private $page = 0;
+    private $count;
     public function __construct(){
         $this->db = new Model($this->dbinfo);
         $this->view = new Viewer();
@@ -30,11 +33,32 @@ class Controller{
     public function getUrl(){
         return $this->url;
     }
+    public function setCount(){
+        $this->count = $this->db->getLength();
+    }
+    public function getCount(){
+        return $this->count;
+    }
+    public function setlastId($lastId){
+        $this->lastId = $lastId;
+    }
+    public function setPage($page){
+        $this->page = $page;
+    }
+    public function getButtons(){
+        $this->setCount();
+        $buttons = "";
+        if ($this->page-1>=0){
+            $buttons.="<button onclick='pagination({$this->page}, \"back\")'>prev</button>";
+        }
+        if(($this->page+1)*$this->offset-$this->count){
+            $buttons.="<button onclick='pagination({$this->page}, \"next\")'>next</button>";
+        }
+        return $buttons;
+    }
     public function render(Array $marked):string{
-        
-        $records = $this->db->allStudents($this->sort, $this->order);
-        
-            return $this->view->render($records, $marked);
+        $records = $this->db->allStudents($this->sort, $this->order, $this->offset*$this->page, $this->offset); 
+        return $this->view->render($records, $marked);
 
     }
     public function run(?string $password){
@@ -74,6 +98,10 @@ class Controller{
             $forRender = array_merge($forRender, $result);
         }
         $forRender = array_unique($forRender);
+        if (empty($forRender)){
+            echo "По вашему запросу ничего не найдено";
+            return [];
+        }
         foreach($forRender as $key){
             $renderedString.=$this->view->render($this->db->findWithId($key));
         }

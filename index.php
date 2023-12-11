@@ -16,6 +16,15 @@ echo $url.$_SERVER["QUERY_STRING"];
     padding: 0 3px;
     border: 1px dashed #333;
    }
+   /*#table {
+    width: 64%;
+    height: 50%;
+    border: 2px solid red;
+    border-radius: 12px;
+    margin-left: auto;
+    margin-right: auto;
+    transform: translate(0);
+   }*/
   </style>
 </head>
 <body>
@@ -26,6 +35,22 @@ echo $url.$_SERVER["QUERY_STRING"];
     <button type="submit">Найти</button>
 </form>
 <?php
+if (isset($_GET["last"])){
+    $controller->setlastId($_GET["last"]);
+}
+if (isset($_GET["search"])){
+    $hide = "style='display: none;'";
+    $message = "Показать таблицу";
+    if(isset($_GET["sortedBy"]) || isset($_GET["page"])){
+        $hide = "";
+        $message = "Скрыть таблицу";
+    }
+    echo "<h4>Результаты поиска по запросу: ".$_GET["search"]."</h4>
+    <table>";
+    $marked = $controller->search($_GET);
+    echo "</table>";
+    echo "<input type='button' id='hide' onclick='showtable()' value='{$message}'/>";
+}
 if (isset($_GET["sortedBy"])){
     if (isset($_GET["order"])){
         
@@ -33,15 +58,13 @@ if (isset($_GET["sortedBy"])){
     }
     $controller->setSort($_GET["sortedBy"]);
 }
-if (isset($_GET["search"])){
-    echo "<h4>Результаты поиска по запросу: ".$_GET["search"]."</h4>
-    <table>";
-    $marked = $controller->search($_GET);
-    echo "</table>";
+if (isset($_GET["page"])){
+    $controller->setPage($_GET["page"]);
 }
 
-?>
 
+?>
+<div id="hidetable" <?php echo $hide ?? "" ?>>
 <table>
     <tr>
         <th onclick="sortRequest('<?= http_build_query(array_merge($_GET, ['sortedBy'=>'first_name']))?>')">Имя</th>
@@ -53,6 +76,10 @@ if (isset($_GET["search"])){
     <?php echo $controller->render($marked) ?>
 
 </table>
+<?php 
+    echo $controller->getButtons();
+?>
+</div>
 </body>
 <script>
     function sortRequest(url){
@@ -63,9 +90,32 @@ if (isset($_GET["search"])){
             urlParams.set('order','1');
         }
         else {
+            urlParams.delete('page');
             urlParams.delete('order');
         }
         window.location.href = "?"+urlParams;
     }
+    function pagination(page, mode){
+        let url = document.location.search;
+        let urlParams = new URLSearchParams(url);
+        if (mode==="next"){
+            urlParams.set('page', Number(page)+1);
+        }
+        else {
+            urlParams.set('page', Number(page)-1);
+        }
+        window.location.href = "?" + urlParams;
+    }
+    function showtable() {
+        let table = document.getElementById("hidetable");
+        let showButton = document.getElementById("hide");
+        if (table.style.display === "none") {
+            table.style.display = "";
+            showButton.value = "Скрыть таблицу";
+        } else {
+        table.style.display = "none";
+        showButton.value = "Показать таблицу";
+    }
+}
 </script>
 </html>

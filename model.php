@@ -55,7 +55,7 @@ class Model{
             return $query->fetchAll(PDO::FETCH_CLASS, "Student");
         }    
     }
-    public function allStudents(?String $sort, ?String $order){
+    public function allStudents(?String $sort, ?String $order, int $offset, int $start){
         $queryStr = "SELECT first_name, surname, place, group_id, mark, student_id FROM students";
         
         if ($sort){
@@ -64,6 +64,7 @@ class Model{
                 $queryStr .= " DESC";
             }
         }
+        $queryStr .= " LIMIT {$offset}, {$start}";
         $query = $this->pdo->prepare($queryStr);
         if($query->execute()){
             return $query->fetchAll(PDO::FETCH_CLASS,"Student");
@@ -92,6 +93,11 @@ class Model{
             $response = array_merge($response, $result);
         }
         return $response;
+    }
+    public function getLength(){
+        $query = $this->pdo->prepare("SELECT count(*) FROM students");
+        $query->execute();
+        return $query->fetch()[0];
     }
 
 }
