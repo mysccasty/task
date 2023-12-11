@@ -55,8 +55,16 @@ class Model{
             return $query->fetchAll(PDO::FETCH_CLASS, "Student");
         }    
     }
-    public function allStudents(){
-        $query = $this->pdo->prepare("SELECT first_name, surname, place, group_id, mark, student_id FROM students");
+    public function allStudents(?String $sort, ?String $order){
+        $queryStr = "SELECT first_name, surname, place, group_id, mark, student_id FROM students";
+        
+        if ($sort){
+            $queryStr .= " ORDER BY ".$sort;
+            if ($order === "1"){
+                $queryStr .= " DESC";
+            }
+        }
+        $query = $this->pdo->prepare($queryStr);
         if($query->execute()){
             return $query->fetchAll(PDO::FETCH_CLASS,"Student");
         }

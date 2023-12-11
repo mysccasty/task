@@ -14,17 +14,25 @@ class Controller{
     ];
     private $url;
     private $view;
+    private $sort;
+    private $order;
     public function __construct(){
         $this->db = new Model($this->dbinfo);
         $this->view = new Viewer();
         $this->url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+    }
+    public function setSort(String $col){
+        $this->sort = $col;
+    }
+    public function setOrder(String $order){
+        $this->order = $order;
     }
     public function getUrl(){
         return $this->url;
     }
     public function render(Array $marked):string{
         
-        $records = $this->db->allStudents();
+        $records = $this->db->allStudents($this->sort, $this->order);
         
             return $this->view->render($records, $marked);
 
