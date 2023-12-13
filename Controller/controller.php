@@ -21,7 +21,7 @@ class Controller{
     private $count;
     public function __construct(){
         $this->db = new Model($this->dbinfo);
-        $this->view = new Viewer();
+        $this->view = new View();
         $this->url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
     }
     public function setSort(String $col){
@@ -56,7 +56,7 @@ class Controller{
         }
         return $buttons;
     }
-    public function render(Array $marked):string{
+    public function render(?Array $marked):string{
         $records = $this->db->allStudents($this->sort, $this->order, $this->offset*$this->page, $this->offset); 
         return $this->view->render($records, $marked);
 
@@ -106,6 +106,7 @@ class Controller{
             $renderedString.=$this->view->render($this->db->findWithId($key));
         }
         echo $renderedString;
+
         return $forRender;
 
     }

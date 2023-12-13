@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ .'/../Controller/controller.php';
-require_once __DIR__ .'/../Controller/getHandler.php';
+require_once __DIR__ .'/Controller/controller.php';
+require_once __DIR__ .'/Controller/getHandler.php';
 $controller = new Controller();
 $url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 if(!$controller->run($_COOKIE['password']??null)){
@@ -18,7 +18,7 @@ $getHandler = new GetHandler($getValidate, $controller);
 <html>
 <head>
     <title>Главная страница</title>
-    <script src="./index.js"></script>
+    <script src="./src/index.js"></script>
     <style>
    .marked {
     background: #ffec82;

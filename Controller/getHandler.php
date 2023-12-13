@@ -28,6 +28,7 @@ class GetHandler{
         }
     }
     public function setSearch(){
+        $marked =[];
         if (isset($this->getQuery["search"])){
             $hide = "style='display: none;'";
             $message = "Показать таблицу";
@@ -41,7 +42,7 @@ class GetHandler{
             echo "</table>";
             echo "<input type='button' id='hide' onclick='showtable()' value='{$message}'/>";
             echo '<div id="hidetable" '.$hide.'>';
-            return $marked;
         }
+        return $marked;
     }
 }

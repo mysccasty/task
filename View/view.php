@@ -1,5 +1,5 @@
 <?php
-class Viewer{
+class View{
     const LAYOUT = <<<HTML
     <tr {{{marked}}}>
         <td>
@@ -22,7 +22,7 @@ class Viewer{
     protected $replacements;
     public function __construct(){
     }
-    public function render(array $students, array $marked=[]): string{
+    public function render(array $students, ?array $marked=[]): string{
         $str = "";
         foreach($students as $key){
             $markOpen = "";
@@ -43,7 +43,6 @@ class Viewer{
                 array_values($this->replacements),
                 self::LAYOUT
             );
-            #echo in_array($key->get_student_id(), $marked);
 
         }
 
