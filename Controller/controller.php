@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ .'/model.php';
-require_once __DIR__ .'/viewer.php';
-require_once __DIR__ .'/Student.php';
+require_once __DIR__ .'/../Model/model.php';
+require_once __DIR__ .'/../View/view.php';
+require_once __DIR__ .'/../Model/Student.php';
 
 class Controller{
     private $db;

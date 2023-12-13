@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ .'/controller.php';
-require_once __DIR__.'/formData.php';
+require_once __DIR__ .'/../Controller/controller.php';
+require_once __DIR__.'/../Pattern/formData.php';
 $controller = new Controller();
 $record = $controller->find("password", $_COOKIE["password"])[0];
 $input = $_POST;

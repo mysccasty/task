@@ -1,7 +1,7 @@
 <?php
 //protectedRoute, gitmerge, gitcherry, gitrebase
-require_once __DIR__ .'/controller.php';
-require_once __DIR__.'/formData.php';
+require_once __DIR__ .'/../Controller/controller.php';
+require_once __DIR__.'/../Pattern/formData.php';
 $controller = new Controller();
 $password = $_COOKIE['password'] ?? null;
 if ($controller->run($password)){
