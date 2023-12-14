@@ -23,6 +23,7 @@ class Controller{
         $this->db = new Model($this->dbinfo);
         $this->view = new View();
         $this->url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+        $this->setCount();
     }
     public function setSort(String $col){
         $this->sort = $col;
@@ -39,6 +40,9 @@ class Controller{
     public function getCount(){
         return $this->count;
     }
+    public function getOffset(){
+        return $this->offset;
+    }
     public function setlastId($lastId){
         $this->lastId = $lastId;
     }
@@ -46,7 +50,6 @@ class Controller{
         $this->page = $page;
     }
     public function getButtons(){
-        $this->setCount();
         $buttons = "";
         if ($this->page-1>=0){
             $buttons.="<button onclick='pagination({$this->page}, \"back\")'>prev</button>";

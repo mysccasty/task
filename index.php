@@ -19,6 +19,7 @@ $getHandler = new GetHandler($getValidate, $controller);
 <head>
     <title>Главная страница</title>
     <script src="./src/index.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <style>
    .marked {
     background: #ffec82;
@@ -28,6 +29,11 @@ $getHandler = new GetHandler($getValidate, $controller);
   </style>
 </head>
 <body>
+<div>
+<a href="<?= $controller->getUrl()."/index.php"?>">
+<i class="fa fa-home fa-fw"></i>Домой
+</a>
+</div>
 <a href="<?= $controller->getUrl()."/edit.php"?>">Редактировать профиль</a>
 <form action="" method="get">
     Поиск:
@@ -35,10 +41,7 @@ $getHandler = new GetHandler($getValidate, $controller);
     <button type="submit">Найти</button>
 </form>
 <?php
-$getHandler->setLast();
-$marked = $getHandler->setSearch();
-$getHandler->setSorted();
-$getHandler->setPage();
+$marked = $getHandler->getHandle();
 ?>
 <table>
     <tr>
@@ -54,6 +57,5 @@ $getHandler->setPage();
 <?php 
     echo $controller->getButtons();
 ?>
-</div>
 </body>
 </html>
