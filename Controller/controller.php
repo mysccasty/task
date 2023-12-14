@@ -54,7 +54,10 @@ class Controller{
         if ($this->page-1>=0){
             $buttons.="<button onclick='pagination({$this->page}, \"back\")'>prev</button>";
         }
-        if(($this->page+1)*$this->offset-$this->count){
+        for($i = 1; $i <= ceil($this->count/$this->offset); $i++){
+            $buttons.="<button onclick='pagination({$i}, \"go\")'>$i</button>";
+        }
+        if(($this->page+1)*$this->offset-$this->count<0){
             $buttons.="<button onclick='pagination({$this->page}, \"next\")'>next</button>";
         }
         return $buttons;
